@@ -1,0 +1,9 @@
+# dsh-session-deleter bundle layer.
+#
+# The row id IS the settings namespace the Host half registers and the browser
+# half writes to (`session-deleter`). Both halves spell the same string; the
+# Host derives the namespace from this id, so moving the row here would orphan
+# the browser card.
+- insert:
+    - id: session-deleter
+      name: dsh-session-deleter
