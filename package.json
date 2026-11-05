@@ -1,0 +1,66 @@
+{
+  "name": "dsh-session-deleter",
+  "version": "0.5.4",
+  "description": "彻底删除 DeepSeek Harness 会话：先归档再从磁盘物理删除会话记录（含子智能体）。支持 macOS / Windows / Linux",
+  "keywords": [
+    "dsh",
+    "deepseek",
+    "deepseek-harness",
+    "plugin",
+    "session",
+    "delete",
+    "windows",
+    "macos",
+    "linux"
+  ],
+  "license": "Apache-2.0",
+  "author": "zhaokejin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhaokejin/dsh-session-deleter.git",
+    "directory": "."
+  },
+  "homepage": "https://github.com/zhaokejin/dsh-session-deleter#readme",
+  "bugs": {
+    "url": "https://github.com/zhaokejin/dsh-session-deleter/issues"
+  },
+  "type": "module",
+  "main": "entry.js",
+  "exports": {
+    ".": "./entry.js",
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "files": [
+    "cordis.patch.yml",
+    "entry.js",
+    "lib",
+    "README.md"
+  ],
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dsh": {
+    "engines": {
+      "dsh": ">=0.2.0-rc.2"
+    },
+    "client": {
+      "platform": "web"
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "build": "node -e \"console.log('lib/client.js is hand-written; no build step')\""
+  }
+}
