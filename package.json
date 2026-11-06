@@ -1,6 +1,6 @@
 {
   "name": "dsh-session-deleter",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "彻底删除 DeepSeek Harness 会话：先归档再从磁盘物理删除会话记录（含子智能体）。支持 macOS / Windows / Linux",
   "keywords": [
     "dsh",

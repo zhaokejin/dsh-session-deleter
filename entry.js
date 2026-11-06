@@ -85,16 +85,36 @@ const NAMESPACE = "session-deleter";
  * This entry's Host configuration schema.
  *
  * `pendingDeletes` is the command channel: the browser writes one token per
- * deletion request. `deleteSubagents` decides whether a deleted session takes
- * its subagent sessions with it.
+ * deletion request. The remaining fields are user-facing options, edited from
+ * the plugin's settings card and read lazily through `readField`, so a change
+ * applies to the next action without restarting the Host:
+ *
+ * - `deleteSubagents`: a deleted session takes its subagent sessions with it
+ * - `confirmBeforeDelete`: the browser asks before sending a delete request
+ * - `showRowButton` / `showHeaderButton`: where the delete buttons appear
+ * - `deleteAttempts`: busy-file retries on Windows before deferring
  */
 export const Config = z.object({
   pendingDeletes: live(z.array(z.string()).default([])),
   deleteSubagents: live(z.boolean().default(true)),
+  confirmBeforeDelete: live(z.boolean().default(true)),
+  showRowButton: live(z.boolean().default(true)),
+  showHeaderButton: live(z.boolean().default(true)),
+  deleteAttempts: live(z.number().default(5)),
 });
 
-/** How many times one deletion is retried before it waits for the next start. */
-const DELETE_ATTEMPTS = 5;
+/**
+ * How many times one deletion is retried before it waits for the next start.
+ * Read from the live config so the settings card can tune it; clamped because
+ * a typed-in number can be anything.
+ * @param config - The applied config.
+ * @returns The attempt count, between 1 and 20.
+ */
+function deleteAttempts(config) {
+  const raw = readField(config, "deleteAttempts");
+  const n = typeof raw === "number" && Number.isFinite(raw) ? Math.round(raw) : 5;
+  return n < 1 ? 1 : n > 20 ? 20 : n;
+}
 
 /** The pause between two attempts, in milliseconds. */
 const DELETE_RETRY_MS = 400;
@@ -232,7 +252,7 @@ export async function apply(ctx, config) {
    */
   async function removeWithRetry(path) {
     let last;
-    for (let attempt = 0; attempt < DELETE_ATTEMPTS; attempt++) {
+    for (let attempt = 0; attempt < deleteAttempts(config); attempt++) {
       try {
         await rm(path, { recursive: true, force: true });
         return;
