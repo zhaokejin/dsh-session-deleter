@@ -184,12 +184,26 @@ Host 半侧按跨平台写的：
 
 ## 配置
 
-编辑 `~/.dsh/profiles/desktop/cordis.patch.yml`：
+**设置 → 插件 → 「会话彻底删除」卡片顶部有配置区**，勾选即时生效（不用重启）：
+
+| 选项 | 默认 | 作用 |
+|---|---|---|
+| 删除前询问确认（显示会话名） | 开 | 关掉后点删除直接执行，不弹确认框 |
+| 删除父会话时一并删除子智能体 | 开 | 关掉后只删父会话，子智能体会话留下 |
+| 侧栏行显示删除按钮 | 开 | 关掉后侧栏会话行不再出现 🗑 |
+| 标题栏显示删除按钮 | 开 | 关掉后会话标题旁不再出现 🗑 |
+| 文件占用重试次数 | 5 | Windows 上文件被占用时的重试次数（1–20） |
+
+也可以直接编辑 `~/.dsh/profiles/desktop/cordis.patch.yml`：
 
 ```yaml
 - id: session-deleter
   config:
-    deleteSubagents: true   # 删父会话时是否连带删子智能体（默认 true）
+    deleteSubagents: true        # 删父会话时是否连带删子智能体
+    confirmBeforeDelete: true    # 删除前是否弹确认框
+    showRowButton: true          # 侧栏行删除按钮
+    showHeaderButton: true       # 标题栏删除按钮
+    deleteAttempts: 5            # Windows 占用重试次数
 ```
 
 `pendingDeletes` 是内部用的命令通道，一般不用碰。
