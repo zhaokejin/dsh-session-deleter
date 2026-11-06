@@ -14,6 +14,16 @@
 
 ---
 
+## 截图
+
+设置卡片（配置区 + 批量删除列表）：
+
+![设置卡片](docs/screenshots/settings-card.png)
+
+会话标题栏的删除按钮：
+
+![标题栏按钮](docs/screenshots/header-button.png)
+
 ## 三个入口
 
 **① 侧栏会话行**：鼠标悬停在会话上，行尾出现红色 **🗑**（在「归档」「置顶」图标旁边）
@@ -40,66 +50,48 @@ dsh 自带只能「归档」会话，记录会一直留在磁盘上。这里可�
 
 ## 安装
 
-### Windows（tarball）
-
-把 `dsh-session-deleter-0.5.0.tgz` 放到任意目录，在 **PowerShell / cmd** 里：
-
-```powershell
-dsh plugin --profile desktop remove dsh-session-deleter
-dsh plugin --profile desktop add .\dsh-session-deleter-0.5.0.tgz
-```
-
-然后**重启 DeepSeek Harness**。
-
-> tarball 安装会把依赖一起装进 profile 的 `node_modules`。
-> 不要用本地目录软链安装（`link:`）——那会让 `@deepseek-ai/schemastery` 解析不到，
-> bundle 被**静默跳过**（不报错，就是插件不生效）。
-
-### macOS / Linux（npm 或 tarball）
+### 一行装（源码直装，不用发 npm）
 
 ```bash
-dsh plugin --profile desktop add dsh-session-deleter      # 已在 npm 上
-dsh plugin --profile desktop add ./dsh-session-deleter-0.5.0.tgz   # 或用 tarball
+dsh plugin --profile desktop add github:zhaokejin/dsh-session-deleter
 ```
 
-### 通用
+### 或用 tarball（Windows 推荐，依赖随包走）
 
 ```bash
-# 桌面端 profile（Electron 用的那个）
-dsh plugin --profile desktop add dsh-session-deleter
+git clone https://github.com/zhaokejin/dsh-session-deleter.git
+cd dsh-session-deleter
+npm pack
+dsh plugin --profile desktop add ./dsh-session-deleter-0.5.5.tgz
+```
 
-# Web profile（可选）
-dsh plugin --profile web add dsh-session-deleter
+也可以直接下载 Release 附件 `dsh-session-deleter-0.5.5.tgz` 后 `add` 它。
 
-# 卸载
+Web profile（可选）：
+
+```bash
+dsh plugin --profile web add github:zhaokejin/dsh-session-deleter
+```
+
+卸载：
+
+```bash
 dsh plugin --profile desktop remove dsh-session-deleter
 ```
 
-装完**重启 App**。`dsh plugin add` 会自动把包名写进
+装完**重启 DeepSeek Harness**。`dsh plugin add` 会自动把包名写进
 `~/.dsh/profiles/<profile>/package.json` 的 `dsh.profile.bundles`。
 
-### 没发到 npm 之前：直接用 tarball
+> Windows 上不要用本地目录软链安装（`link:`）——那会让 `@deepseek-ai/schemastery` 解析不到，
+> bundle 被**静默跳过**（不报错，就是插件不生效）。tarball 安装会把依赖一起装进 profile 的 `node_modules`。
+
+### 发到 npm（可选）
 
 ```bash
-npm pack                    # 在 pkg/ 里，产出 dsh-session-deleter-0.5.0.tgz
-dsh plugin --profile desktop add ./dsh-session-deleter-0.5.0.tgz
+npm login && npm publish --access public
 ```
 
-tarball 安装会把依赖一起装进 profile 的 `node_modules`，**不会**出现软链导致的
-「找不到 @deepseek-ai/schemastery → bundle 被静默跳过」。
-
-### 发到 npm（公开，任何人可装）
-
-```bash
-npm login                                   # 需要你的 npm 账号
-npm publish --access public                 # 包名 dsh-session-deleter 目前没人占用
-```
-
-发完之后任何机器（macOS / Windows / Linux）都能：
-
-```bash
-dsh plugin --profile desktop add dsh-session-deleter
-```
+发完后任何机器（macOS / Windows / Linux）都能 `dsh plugin --profile desktop add dsh-session-deleter`。
 
 ## 跨平台（Windows / macOS / Linux）
 
