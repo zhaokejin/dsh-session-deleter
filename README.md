@@ -44,7 +44,8 @@ dsh 自带只能「归档」会话，记录会一直留在磁盘上。这里可�
 你在审查一个本地开源工具，· 子智能体    10/29/2026, 5:07:39 PM   🗑 删除
 ```
 
-点「删除」会先弹确认框，删完自动刷新页面，侧栏里那条会话就没了。
+点「删除」会先弹带会话名的确认框，确认后**无感删除**：不刷新页面、不重启程序，
+侧栏里那条会话直接消失；如果删的是当前打开的会话，视图会原地回到首页。
 
 ---
 
@@ -62,10 +63,10 @@ dsh plugin --profile desktop add github:zhaokejin/dsh-session-deleter
 git clone https://github.com/zhaokejin/dsh-session-deleter.git
 cd dsh-session-deleter
 npm pack
-dsh plugin --profile desktop add ./dsh-session-deleter-0.5.5.tgz
+dsh plugin --profile desktop add ./dsh-session-deleter-0.5.6.tgz
 ```
 
-也可以直接下载 Release 附件 `dsh-session-deleter-0.5.5.tgz` 后 `add` 它。
+也可以直接下载 Release 附件 `dsh-session-deleter-0.5.6.tgz` 后 `add` 它。
 
 Web profile（可选）：
 
@@ -115,6 +116,17 @@ Host 半侧按跨平台写的：
 > 解析不到，bundle 会被静默跳过。
 
 ---
+
+## 0.5.6：无感删除（不再刷新页面）
+
+之前删完会 `location.reload()` 整页刷新，看起来像「重新进入程序」。现在：
+
+- 归档停机改走客户端自己的 `uiWorkspace` 导航服务：删的是当前打开的会话时，
+  App 原生 `clearMain()` 把视图原地切回首页，**零刷新**
+- 侧栏行由 Host 推送的 `api-session/removed` 事件自动移除（这个机制本来就有，
+  之前被整页刷新掩盖了）
+- 三个入口（侧栏行 🗑 / ⋯ 菜单 / 标题栏）的确认框都显示会话名，避免误删
+- 实测：删当前会话 → 确认 → 回首页，reload 次数 0；删非当前会话 → 行消失，当前视图不受影响
 
 ## 0.5.0：彻底消失（不只是归档）
 
